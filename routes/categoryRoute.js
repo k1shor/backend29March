@@ -1,12 +1,13 @@
 const express = require('express')
 const { addCategory, getAllCategories, getCategoryDetails, updateCategory, deleteCategory } = require('../controller/categoryController')
 const { authorize } = require('../controller/userController')
+const { validationCheck, categoryCheck } = require('../validation/validation')
 const router = express.Router()
 
-router.post('/addcategory',authorize, addCategory)
+router.post('/addcategory',authorize, categoryCheck, validationCheck,addCategory)
 router.get('/getall', getAllCategories)
 router.get('/getCategoryDetails/:id', getCategoryDetails)
-router.put('/updatecategory/:id', authorize, updateCategory)
+router.put('/updatecategory/:id', authorize, categoryCheck, validationCheck,updateCategory)
 router.delete('/deletecategory/:id', authorize, deleteCategory)
 
 module.exports = router

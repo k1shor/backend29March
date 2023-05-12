@@ -3,6 +3,7 @@ require('dotenv').config()
 require('./connection')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 // routes
 const TestRoute = require('./routes/testroute')
@@ -10,13 +11,14 @@ const CategoryRoute = require('./routes/categoryRoute')
 const ProductRoute = require('./routes/productRoute')
 const UserRoute = require('./routes/userRoute')
 const OrderRoute = require('./routes/orderRoute')
-
+const PaymentRoute = require('./routes/paymentRoute')
 // creating an app using express
 const app = express()
 
 
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+app.use(cors())
 
 // starting server
 
@@ -28,7 +30,9 @@ app.listen(port, ()=>{
 
 // using routes
 app.use(TestRoute)
-app.use('/category',CategoryRoute)
-app.use('/product',ProductRoute)
-app.use('/user',UserRoute)
-app.use('/order',OrderRoute)
+app.use(CategoryRoute)
+app.use(ProductRoute)
+app.use(UserRoute)
+app.use(OrderRoute)
+app.use('/public/uploads',express.static('public/uploads'))
+app.use(PaymentRoute)

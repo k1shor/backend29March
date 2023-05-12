@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
 // virtual fields
 userSchema.virtual('password')
 .get(function(){
-    return _password
+    return this._password
 })
 .set(function(password){
     this._password = password

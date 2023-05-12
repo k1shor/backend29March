@@ -38,7 +38,8 @@ exports.register = async (req, res) => {
     }
 
     // send email verification 
-    const url = `http://localhost:5000/user/verification/${token.token}`
+    // const url = `http://localhost:5000/user/verification/${token.token}`
+    const url = `${process.env.FRONTEND_URL}/verification/${token.token}`
     sendEmail({
         from: 'noreply@something.com',
         to: email,
@@ -96,7 +97,9 @@ exports.resendVerification = async (req, res) => {
         return res.status(400).json({error:"Failed to generate token"})
     }
     // send email
-    const url = `http://localhost:5000/user/verification/${token.token}`
+    // const url = `http://localhost:5000/user/verification/${token.token}`
+    const url = `${process.env.FRONTEND_URL}/verification/${token.token}`
+
 
     sendEmail({
         from: "noreply@something.com",
@@ -170,7 +173,8 @@ exports.forgetPassword = async (req, res) => {
         return res.status(400).json({error:"Something wennt wrong"})
     }
     // send token in email
-    const url = `http://localhost:5000/user/resetpassword/${token.token}`
+    // const url = `http://localhost:5000/user/resetpassword/${token.token}`
+    const url = `${process.env.FRONTEND_URL}/resetpassword/${token.token}`
     sendEmail({
         from: "noreply@something.com",
         to: user.email,
@@ -216,3 +220,31 @@ exports.authorize = expressjwt({
     algorithms: ['HS256'],
     secret: process.env.JWT_SECRET
 })
+
+//  to get all users
+exports.getUserList = async (req, res) => {
+    let users = await User.find().select(['-hashed_password','-salt'])
+    if(!users){
+        return res.status(400).json({error:"Something went wrong"})
+    }
+    res.send(users)
+}
+
+// to make admin
+exports.toggleRole = async (req, res) => {
+    let user = await User.findById(req.params.id)
+    if(!user){
+        return res.status(400).json({error:"User not found"})
+    }
+    if(user.role === 0){
+        user.role = 1
+    }
+    else{
+        user.role = 0
+    }
+    user = await user.save()
+    if(!user){
+        return res.status(400).json({error:"Something went wrong"})
+    }
+    res.send({message:"User role updated"})
+}

@@ -5,7 +5,7 @@ let OrderItems = require('../model/OrderItems')
 exports.placeOrder = async(req, res) => {
     let orderItemsIds = await Promise.all(req.body.orderItems.map(async orderItem=>{
         let orderItemToSave = new OrderItems({
-            product: orderItem.product,
+            product: orderItem._id,
             quantity: orderItem.quantity
         })
         orderItemToSave = await orderItemToSave.save()
